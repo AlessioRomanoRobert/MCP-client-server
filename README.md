@@ -59,7 +59,8 @@ Cliente                         Servidor
 ├── servers/
 │   ├── basic/           TypeScript — citas aleatorias, herramienta matemática, prompt de revisión de código
 │   ├── todo-ts/         TypeScript — gestor TODO completo con CRUD vía MCP
-│   └── calculator-py/   Python     — calculadora aritmética (FastMCP)
+│   ├── calculator-py/   Python     — calculadora aritmética (FastMCP)
+│   └── notes-py/        Python     — notas persistentes con SQLite (FastMCP)
 │
 └── clients/
     ├── basic-ts/        TypeScript — explora todas las capacidades del servidor basic
@@ -135,6 +136,7 @@ Escribe `/exit` para salir.
 | [`basic`](servers/basic/) | TypeScript | API de citas, herramienta LCM, resource de persona, prompt de revisión de código |
 | [`todo-ts`](servers/todo-ts/) | TypeScript | Lista TODO en memoria con CRUD completo |
 | [`calculator-py`](servers/calculator-py/) | Python | suma, resta, multiplicación, división |
+| [`notes-py`](servers/notes-py/) | Python | Notas persistentes con SQLite — crear, listar, buscar, actualizar, eliminar |
 
 ## Clientes
 
