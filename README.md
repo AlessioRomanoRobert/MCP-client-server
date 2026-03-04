@@ -52,43 +52,65 @@ Cliente                         Servidor
 
 ---
 
-## Dos formas de usar un cliente MCP
+## Cliente y servidor MCP: dónde viven en una arquitectura real
 
-Hay una distinción importante entre los dos tipos de clientes de este repositorio:
+La nomenclatura MCP (cliente/servidor) describe roles dentro del **protocolo**, no capas de una arquitectura de producto. En un SaaS real, tanto el cliente MCP como el servidor MCP son componentes de **tu backend** — el usuario final no interactúa con ninguno de los dos directamente.
 
-### Cliente básico — tú decides qué tool llamar
+```
+Usuario final (browser / app móvil)
+        │
+        ▼
+Tu aplicación de IA        ←── "MCP Client" — tu backend, la capa orquestadora
+        │
+        ▼
+Servidor MCP               ←── "MCP Server" — microservicio interno que expone tools
+        │
+        ▼
+Base de datos / APIs externas
+```
 
-El código llama a las tools directamente, de forma hardcodeada. No hay IA en medio: tú controlas qué se ejecuta y cuándo. Es el equivalente a llamar a una API REST.
+| Término MCP | En términos de SaaS |
+|---|---|
+| MCP Server | Microservicio backend con una interfaz estandarizada |
+| MCP Client básico | Script o worker backend que llama a las tools de forma directa |
+| MCP Client con LLM | Capa de aplicación IA — el "cerebro" del producto |
+| Usuario final | No aparece en MCP — está una capa por encima |
+
+---
+
+## Dos formas de implementar el cliente MCP
+
+Dentro del backend, hay dos estilos de cliente según quién decide qué tool invocar:
+
+### Cliente básico — el código decide
+
+Las tools se llaman de forma hardcodeada. No hay IA en medio: el flujo está definido de antemano, como si fuera una llamada a una API REST interna.
 
 ```
 Tu código  ──►  tools/call  ──►  Servidor MCP  ──►  resultado  ──►  Tu código
 ```
 
 ```python
-# Tú decides explícitamente qué tool llamar y con qué argumentos
 await session.call_tool("create_note", {"title": "Mi nota", "content": "..."})
 ```
 
-Útil para explorar el servidor, escribir tests o integraciones donde el flujo está definido de antemano.
+Útil para explorar el servidor, escribir tests o integraciones con flujo fijo.
 
-### Cliente con LLM (Ollama) — el modelo decide qué tool llamar
+### Cliente con LLM — el modelo decide
 
-Tú solo envías el mensaje del usuario en lenguaje natural. El LLM recibe la lista de tools disponibles (nombre, descripción y esquema) y decide solo si necesita llamar a alguna, cuál y con qué argumentos.
+El código solo recibe el mensaje del usuario. El LLM lee la lista de tools disponibles (nombre, descripción y esquema) y decide por sí solo si necesita llamar a alguna, cuál y con qué argumentos.
 
 ```
 Usuario ──► LLM ──► tools/call ──► Servidor MCP ──► LLM ──► respuesta al usuario
-            (decide)                                (razona)
+            (decide)                                (razona con el resultado)
 ```
 
 ```python
-# Tú solo haces esto — el LLM hace el resto
+# El LLM decide internamente si llamar a alguna tool y cuál
 await agent.chat("apunta que tengo reunión con Pedro el lunes")
-
-# Internamente el LLM decide llamar a create_note con los argumentos correctos
-# El resultado vuelve al LLM, que genera una respuesta en lenguaje natural
 ```
 
-Útil para asistentes conversacionales, agentes y cualquier caso donde no sabes de antemano qué tools va a necesitar el usuario.
+Útil para asistentes conversacionales y agentes donde el flujo no está predefinido.
 
 ---
 
