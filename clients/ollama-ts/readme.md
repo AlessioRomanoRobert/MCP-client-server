@@ -1,122 +1,83 @@
-# Ollama TypeScript Client with MCP Integration
+# Ollama MCP Client (TypeScript)
 
-Este proyecto es un cliente de TypeScript para interactuar con Ollama y servidores MCP (Machine Control Protocol). Permite establecer conversaciones con modelos de lenguaje de Ollama y ejecutar herramientas tanto integradas como proporcionadas por un servidor MCP.
+An interactive chat client that connects a local [Ollama](https://ollama.com) LLM to an MCP server, enabling **function calling** — the model can invoke MCP tools automatically in response to user messages.
 
-## Requisitos previos
+## How it works
 
-Antes de comenzar, asegúrate de tener instalado:
-
-- [Node.js](https://nodejs.org/) (v16 o superior)
-- [npm](https://www.npmjs.com/) (normalmente viene con Node.js)
-- [Ollama](https://ollama.ai/) instalado y ejecutándose en tu sistema
-- Un servidor MCP (para las funcionalidades de herramientas externas)
-
-## Configuración del proyecto
-
-### 1. Clonar o crear el proyecto
-
-```bash
-# Crea el directorio del proyecto
-mkdir ollama-ts-app
-cd ollama-ts-app
-
-# Copia los archivos del proyecto
-# - mcpClient.ts
-# - ollamaApp.ts
-# - package.json
-# - tsconfig.json
+```
+User input ──► Ollama (LLM) ──► tool_call? ──► MCP Server ──► result ──► Ollama ──► final response
 ```
 
-### 2. Instalar dependencias
+1. User sends a message
+2. The LLM decides whether to answer directly or call an MCP tool
+3. If a tool call is requested, the client executes it via the MCP server
+4. The tool result is fed back to the LLM for the final answer
+
+---
+
+## Prerequisites
+
+- Node.js v18+
+- [Ollama](https://ollama.com) running locally
+- A model with function calling support (e.g. `mistral`, `llama3`)
+
+```bash
+ollama pull mistral
+```
+
+## Setup
 
 ```bash
 npm install
-```
-
-### 3. Configuración del entorno
-
-Por defecto, el proyecto está configurado para conectarse a:
-- Ollama en `http://localhost:11434`
-- Un servidor MCP ejecutado con Node.js en la ruta especificada en la variable de entorno `MCP_SERVER_PATH`
-
-Puedes modificar estas configuraciones editando las constantes al inicio de `ollamaApp.ts` o estableciendo la variable de entorno `MCP_SERVER_PATH`.
-
-```bash
-# Ejemplo de configuración de la variable de entorno
-export MCP_SERVER_PATH=/ruta/a/tu/servidor/mcp/server.js
-```
-
-## Compilación
-
-Para compilar el proyecto TypeScript a JavaScript:
-
-```bash
 npm run build
 ```
 
-Esto generará los archivos JavaScript en el directorio `dist/`.
-
-## Ejecución
-
-### Iniciar la aplicación
+## Run
 
 ```bash
 npm start
 ```
 
-O si prefieres ejecutar directamente con ts-node durante el desarrollo:
+The client will:
+1. Verify the Ollama connection
+2. Connect to the MCP server
+3. Start an interactive chat session
+
+Type `/exit` (or `/quit`, `/salir`) to end the session.
+
+## Configuration
+
+| Variable | Default | Description |
+|---|---|---|
+| `MCP_SERVER_PATH` | *(relative to repo root)* | Absolute path to the MCP server JS file |
 
 ```bash
-npm run dev
+MCP_SERVER_PATH=/path/to/server.js npm start
 ```
 
-### Uso del chat interactivo
+The default model is `mistral:latest`. Change `DEFAULT_MODEL` in `src/ollamaApp.ts` to use another.
 
-Una vez iniciada la aplicación:
+## Project Structure
 
-1. La aplicación verificará la conexión con Ollama y el servidor MCP
-2. Se iniciará un chat interactivo donde puedes:
-   - Escribir mensajes que serán procesados por el modelo seleccionado
-   - Ver las respuestas del modelo
-   - Observar cuando el modelo decide ejecutar herramientas
-   - Escribir `/salir`, `/exit` o `/quit` para terminar la sesión
+```
+clients/ollama-ts/
+├── src/
+│   ├── ollamaApp.ts   Main application — OllamaAgent, chat loop, tool execution
+│   └── mcpClient.ts   MCP client wrapper (connect, list tools, execute)
+├── dist/              Compiled output (after build)
+├── package.json
+└── tsconfig.json
+```
 
-## Estructura del proyecto
+## Troubleshooting
 
-- `mcpClient.ts`: Cliente para interactuar con servidores MCP
-- `ollamaApp.ts`: Implementación principal con clientes de Ollama, gestor de herramientas y chat interactivo
-- `package.json`: Configuración del proyecto, dependencias y scripts
-- `tsconfig.json`: Configuración de TypeScript
-
-## Personalización
-
-### Agregar nuevas herramientas integradas
-
-Para agregar nuevas herramientas integradas, edita la clase `ToolManager` en `ollamaApp.ts` y añade tu herramienta al array `builtInTools`. Luego implementa la lógica de ejecución en la función `executeFunction`.
-
-### Cambiar el modelo predeterminado
-
-Modifica la constante `DEFAULT_MODEL` en `ollamaApp.ts` para utilizar un modelo diferente.
-
-## Solución de problemas
-
-### El servidor Ollama no está disponible
-
-Asegúrate de que Ollama esté instalado y ejecutándose. Puedes verificar su estado con:
-
+**Ollama not responding**
 ```bash
-ollama list
+ollama serve      # make sure it's running
+ollama list       # verify you have a model downloaded
 ```
 
-### Error de conexión con el servidor MCP
-
-Verifica que:
-1. La ruta al servidor MCP sea correcta
-2. El servidor MCP esté ejecutándose
-3. El servidor implemente correctamente el protocolo MCP
-
-## Dependencias principales
-
-- `@modelcontextprotocol/sdk`: SDK para interactuar con servidores MCP
-- `node-fetch`: Para realizar solicitudes HTTP a la API de Ollama
-- `typescript`: Para la compilación de TypeScript a JavaScript
+**MCP server not connecting** — check that the server is built and the path is correct:
+```bash
+cd servers/basic && npm run build
+```
