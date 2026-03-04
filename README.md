@@ -52,6 +52,46 @@ Cliente                         Servidor
 
 ---
 
+## Dos formas de usar un cliente MCP
+
+Hay una distinción importante entre los dos tipos de clientes de este repositorio:
+
+### Cliente básico — tú decides qué tool llamar
+
+El código llama a las tools directamente, de forma hardcodeada. No hay IA en medio: tú controlas qué se ejecuta y cuándo. Es el equivalente a llamar a una API REST.
+
+```
+Tu código  ──►  tools/call  ──►  Servidor MCP  ──►  resultado  ──►  Tu código
+```
+
+```python
+# Tú decides explícitamente qué tool llamar y con qué argumentos
+await session.call_tool("create_note", {"title": "Mi nota", "content": "..."})
+```
+
+Útil para explorar el servidor, escribir tests o integraciones donde el flujo está definido de antemano.
+
+### Cliente con LLM (Ollama) — el modelo decide qué tool llamar
+
+Tú solo envías el mensaje del usuario en lenguaje natural. El LLM recibe la lista de tools disponibles (nombre, descripción y esquema) y decide solo si necesita llamar a alguna, cuál y con qué argumentos.
+
+```
+Usuario ──► LLM ──► tools/call ──► Servidor MCP ──► LLM ──► respuesta al usuario
+            (decide)                                (razona)
+```
+
+```python
+# Tú solo haces esto — el LLM hace el resto
+await agent.chat("apunta que tengo reunión con Pedro el lunes")
+
+# Internamente el LLM decide llamar a create_note con los argumentos correctos
+# El resultado vuelve al LLM, que genera una respuesta en lenguaje natural
+```
+
+Útil para asistentes conversacionales, agentes y cualquier caso donde no sabes de antemano qué tools va a necesitar el usuario.
+
+---
+
 ## Estructura del proyecto
 
 ```

@@ -8,6 +8,16 @@ Cliente MCP mínimo asíncrono en Python que se conecta al [servidor basic](../.
 2. Lista todos los **prompts**, **resources**, **resource templates** y **tools** disponibles
 3. Llama a cada uno con argumentos de ejemplo e imprime los resultados
 
+## Quién decide qué tool llamar
+
+**Este cliente, no un LLM.** El código llama a las tools de forma hardcodeada y directa — es el equivalente a hacer peticiones a una API REST. No hay inteligencia en medio: tú controlas exactamente qué se ejecuta y cuándo.
+
+```
+Tu código  ──►  tools/call  ──►  Servidor MCP  ──►  resultado  ──►  Tu código
+```
+
+Si quieres que sea un LLM quien decida qué tools llamar según el contexto de una conversación, mira [`ollama-py`](../ollama-py/).
+
 ---
 
 ## Instalación

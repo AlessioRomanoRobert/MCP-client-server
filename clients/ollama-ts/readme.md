@@ -2,16 +2,24 @@
 
 Cliente de chat interactivo que conecta un LLM local de [Ollama](https://ollama.com) con un servidor MCP, habilitando **function calling** — el modelo puede invocar tools MCP de forma automática en respuesta a los mensajes del usuario.
 
-## Cómo funciona
+## Quién decide qué tool llamar
+
+**El LLM, no tu código.** Tú solo envías el mensaje del usuario en lenguaje natural. El cliente pasa al modelo la lista de tools disponibles (nombre, descripción y esquema de argumentos) y es el modelo quien decide si necesita llamar a alguna, cuál y con qué argumentos.
 
 ```
-Mensaje del usuario ──► Ollama (LLM) ──► ¿tool_call? ──► Servidor MCP ──► resultado ──► Ollama ──► respuesta final
+Usuario ──► LLM ──► ¿tool_call? ──► Servidor MCP ──► LLM ──► respuesta al usuario
+            (decide)                                  (razona con el resultado)
 ```
 
-1. El usuario envía un mensaje
-2. El LLM decide si responde directamente o llama a una tool MCP
-3. Si se solicita una llamada a tool, el cliente la ejecuta contra el servidor MCP
-4. El resultado se devuelve al LLM para que genere la respuesta final
+Esto contrasta con los clientes básicos (`basic-ts`, `basic-py`), donde es el código quien llama a las tools de forma hardcodeada.
+
+## Cómo funciona paso a paso
+
+1. El usuario envía un mensaje en lenguaje natural
+2. El LLM recibe el mensaje junto con el esquema de todas las tools disponibles
+3. El LLM decide si responde directamente o si necesita llamar a una tool
+4. Si pide una tool, el cliente la ejecuta contra el servidor MCP
+5. El resultado vuelve al LLM para que genere la respuesta final
 
 ---
 
