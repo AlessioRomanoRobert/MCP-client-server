@@ -1,56 +1,71 @@
-# Servicio MCP Básico
+# Basic MCP Server
 
-Este es un servicio MCP (Model Context Protocol) que proporciona varias funcionalidades, incluyendo citas de Game of Thrones y operaciones matemáticas.
+A feature-rich MCP server written in TypeScript that demonstrates the three core MCP capability types: **tools**, **resources**, and **prompts**.
 
-## Requisitos Previos
+## Capabilities
 
-- Node.js (versión 16 o superior)
-- npm (administrador de paquetes de Node.js)
+### Tools
 
-## Pasos para Ejecutar el Servicio
+| Name | Description |
+|---|---|
+| `get_random_quotes` | Fetches 1–10 random quotes from a public quotes API |
+| `lcm` | Calculates the least common multiple of a list of numbers |
 
-1. **Instalar Dependencias**
-   ```bash
-   npm install
-   ```
+### Resources
 
-2. **Compilar el Proyecto**
-   ```bash
-   npm run build
-   ```
+| URI | Description |
+|---|---|
+| `got://quotes/random` | Static resource — returns 5 random quotes |
+| `person://properties/{name}` | Template resource — returns properties for a named person (`alexys`, `mariana`) |
 
-3. **Ejecutar el Servicio**
-   ```bash
-   npm start
-   ```
+### Prompts
 
-## Funcionalidades Incluidas
+| Name | Arguments | Description |
+|---|---|---|
+| `got_quotes_analysis` | `theme?` (optional) | Primes the AI to analyze quotes, optionally focused on a theme |
+| `code_review` | `code` | Primes the AI to perform a thorough code review |
 
-El servicio incluye las siguientes herramientas:
+---
 
-- **get_random_quotes**: Obtiene citas aleatorias de Game of Thrones
-- **lcm**: Calcula el mínimo común múltiplo de una lista de números
-- **person-properties**: Accede a información de personas registradas
-- **got_quotes_analysis**: Analiza citas de Game of Thrones
-- **code_review**: Proporciona una estructura para revisión de código
+## Setup
 
-## Estructura del Proyecto
+**Prerequisites:** Node.js v18+
 
-- `src/server.ts`: Archivo principal del servidor
-- `dist/`: Directorio donde se genera el código compilado
-- `package.json`: Configuración del proyecto y dependencias
-- `tsconfig.json`: Configuración de TypeScript
+```bash
+npm install
+npm run build
+```
 
-## Solución de Problemas
+## Run
 
-Si encuentras algún error durante la instalación o ejecución:
+```bash
+npm start
+```
 
-1. Asegúrate de tener la versión correcta de Node.js instalada
-2. Intenta eliminar la carpeta `node_modules` y el archivo `package-lock.json`, luego ejecuta `npm install` nuevamente
-3. Verifica que todos los archivos estén en la ubicación correcta según la estructura del proyecto
+The server listens on **stdio** — it is designed to be launched by an MCP client, not run directly as a standalone HTTP server.
 
-## Notas Adicionales
+## Project Structure
 
-- El servicio se ejecuta como un proceso en segundo plano
-- Los logs y errores se mostrarán en la consola
-- Para detener el servicio, presiona Ctrl+C en la terminal 
+```
+servers/basic/
+├── src/
+│   └── server.ts     Main server — tools, resources, and prompts
+├── dist/             Compiled JavaScript output (after build)
+├── package.json
+└── tsconfig.json
+```
+
+## Connecting a Client
+
+From a client, launch this server via stdio transport:
+
+```typescript
+import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
+
+const transport = new StdioClientTransport({
+  command: "node",
+  args: ["path/to/servers/basic/dist/server.js"],
+});
+```
+
+See [`clients/basic-ts`](../../clients/basic-ts/) or [`clients/basic-py`](../../clients/basic-py/) for working examples.
