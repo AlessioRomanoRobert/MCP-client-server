@@ -1,83 +1,83 @@
-# Ollama MCP Client (TypeScript)
+# Cliente MCP con Ollama (TypeScript)
 
-An interactive chat client that connects a local [Ollama](https://ollama.com) LLM to an MCP server, enabling **function calling** — the model can invoke MCP tools automatically in response to user messages.
+Cliente de chat interactivo que conecta un LLM local de [Ollama](https://ollama.com) con un servidor MCP, habilitando **function calling** — el modelo puede invocar tools MCP de forma automática en respuesta a los mensajes del usuario.
 
-## How it works
+## Cómo funciona
 
 ```
-User input ──► Ollama (LLM) ──► tool_call? ──► MCP Server ──► result ──► Ollama ──► final response
+Mensaje del usuario ──► Ollama (LLM) ──► ¿tool_call? ──► Servidor MCP ──► resultado ──► Ollama ──► respuesta final
 ```
 
-1. User sends a message
-2. The LLM decides whether to answer directly or call an MCP tool
-3. If a tool call is requested, the client executes it via the MCP server
-4. The tool result is fed back to the LLM for the final answer
+1. El usuario envía un mensaje
+2. El LLM decide si responde directamente o llama a una tool MCP
+3. Si se solicita una llamada a tool, el cliente la ejecuta contra el servidor MCP
+4. El resultado se devuelve al LLM para que genere la respuesta final
 
 ---
 
-## Prerequisites
+## Requisitos previos
 
 - Node.js v18+
-- [Ollama](https://ollama.com) running locally
-- A model with function calling support (e.g. `mistral`, `llama3`)
+- [Ollama](https://ollama.com) en ejecución local
+- Un modelo con soporte de function calling (p. ej. `mistral`, `llama3`)
 
 ```bash
 ollama pull mistral
 ```
 
-## Setup
+## Instalación
 
 ```bash
 npm install
 npm run build
 ```
 
-## Run
+## Ejecución
 
 ```bash
 npm start
 ```
 
-The client will:
-1. Verify the Ollama connection
-2. Connect to the MCP server
-3. Start an interactive chat session
+El cliente:
+1. Verifica la conexión con Ollama
+2. Se conecta al servidor MCP
+3. Inicia una sesión de chat interactivo
 
-Type `/exit` (or `/quit`, `/salir`) to end the session.
+Escribe `/exit` (o `/quit`, `/salir`) para terminar la sesión.
 
-## Configuration
+## Configuración
 
-| Variable | Default | Description |
+| Variable | Valor por defecto | Descripción |
 |---|---|---|
-| `MCP_SERVER_PATH` | *(relative to repo root)* | Absolute path to the MCP server JS file |
+| `MCP_SERVER_PATH` | *(relativa a la raíz del repositorio)* | Ruta absoluta al fichero JS del servidor MCP |
 
 ```bash
-MCP_SERVER_PATH=/path/to/server.js npm start
+MCP_SERVER_PATH=/ruta/al/server.js npm start
 ```
 
-The default model is `mistral:latest`. Change `DEFAULT_MODEL` in `src/ollamaApp.ts` to use another.
+El modelo por defecto es `mistral:latest`. Cámbialo modificando `DEFAULT_MODEL` en `src/ollamaApp.ts`.
 
-## Project Structure
+## Estructura del proyecto
 
 ```
 clients/ollama-ts/
 ├── src/
-│   ├── ollamaApp.ts   Main application — OllamaAgent, chat loop, tool execution
-│   └── mcpClient.ts   MCP client wrapper (connect, list tools, execute)
-├── dist/              Compiled output (after build)
+│   ├── ollamaApp.ts   Aplicación principal — OllamaAgent, bucle de chat, ejecución de tools
+│   └── mcpClient.ts   Wrapper del cliente MCP (conexión, listado de tools, ejecución)
+├── dist/              Salida compilada (tras el build)
 ├── package.json
 └── tsconfig.json
 ```
 
-## Troubleshooting
+## Resolución de problemas
 
-**Ollama not responding**
+**Ollama no responde**
 ```bash
-ollama serve      # make sure it's running
-ollama list       # verify you have a model downloaded
+ollama serve      # asegúrate de que está en marcha
+ollama list       # verifica que tienes algún modelo descargado
 ```
 
-**MCP server not connecting** — check that the server is built and the path is correct:
+**El servidor MCP no conecta** — comprueba que el servidor está compilado y la ruta es correcta:
 ```bash
 cd servers/basic && npm run build
 ```

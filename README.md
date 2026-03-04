@@ -1,89 +1,89 @@
-# MCP Client-Server Examples
+# MCP Client-Server — Ejemplos prácticos
 
-A practical reference implementation of the **Model Context Protocol (MCP)** — covering servers, clients, and LLM integrations in TypeScript, Python, and Go.
+Una implementación de referencia del **Model Context Protocol (MCP)** — con servidores, clientes e integraciones con LLMs en TypeScript, Python y Go.
 
 ---
 
-## What is MCP?
+## ¿Qué es MCP?
 
-**Model Context Protocol (MCP)** is an open standard that lets AI models securely connect to external tools, data sources, and services. Think of it as a universal plugin system for AI: instead of baking capabilities into a model's weights, you expose them as MCP servers and any compatible client (or LLM host) can use them dynamically.
+**Model Context Protocol (MCP)** es un estándar abierto que permite a los modelos de IA conectarse de forma segura a herramientas externas, fuentes de datos y servicios. Piensa en él como un sistema universal de plugins para IA: en lugar de integrar capacidades directamente en los pesos del modelo, se exponen como servidores MCP y cualquier cliente compatible puede usarlas de forma dinámica.
 
-### The problem MCP solves
+### El problema que resuelve MCP
 
-Without a standard protocol, every AI application has to write custom integration code for every tool — file systems, databases, APIs, calculators, etc. This creates a combinatorial explosion of one-off connectors.
+Sin un protocolo estándar, cada aplicación de IA tiene que escribir código de integración personalizado para cada herramienta — sistemas de ficheros, bases de datos, APIs, calculadoras, etc. Esto provoca una explosión combinatoria de conectores ad hoc.
 
-MCP defines a single interface so that **one server works with any client**, and **one client works with any server**.
+MCP define una interfaz única para que **un servidor funcione con cualquier cliente** y **un cliente funcione con cualquier servidor**.
 
 ```
 ┌──────────────────────┐           MCP           ┌─────────────────────┐
-│   AI App / LLM Host  │ ◄────────────────────── │     MCP Server      │
-│      (Client)        │  discover + call tools   │  (your tools/data)  │
+│   App de IA / Host   │ ◄────────────────────── │     Servidor MCP    │
+│      (Cliente)       │  descubrir + llamar      │  (tus tools/datos)  │
 └──────────────────────┘                          └─────────────────────┘
 ```
 
 ---
 
-## Core Concepts
+## Conceptos clave
 
-| Concept | Description |
+| Concepto | Descripción |
 |---|---|
-| **Server** | A process that exposes capabilities (tools, resources, prompts) over MCP |
-| **Client** | A process that connects to an MCP server and uses its capabilities |
-| **Tool** | A function the AI can call — receives arguments, returns a result |
-| **Resource** | Data the AI can read, identified by a URI (static or templated) |
-| **Prompt** | A reusable message template that primes the AI for a specific task |
-| **Transport** | The communication channel — `stdio` for local processes, HTTP/SSE for remote |
+| **Server** | Proceso que expone capacidades (tools, resources, prompts) a través de MCP |
+| **Client** | Proceso que se conecta a un servidor MCP y usa sus capacidades |
+| **Tool** | Función que la IA puede invocar — recibe argumentos y devuelve un resultado |
+| **Resource** | Dato que la IA puede leer, identificado por una URI (estática o con plantilla) |
+| **Prompt** | Plantilla de mensaje reutilizable que prepara a la IA para una tarea concreta |
+| **Transport** | Canal de comunicación — `stdio` para procesos locales, HTTP/SSE para remotos |
 
-### Lifecycle
+### Ciclo de vida
 
 ```
-Client                          Server
+Cliente                         Servidor
   │                               │
-  │──── initialize ──────────────►│   Exchange capabilities
+  │──── initialize ──────────────►│   Intercambio de capacidades
   │◄─── initialized ──────────────│
   │                               │
-  │──── tools/list ──────────────►│   Discover available tools
+  │──── tools/list ──────────────►│   Descubrir herramientas disponibles
   │◄─── tools/list result ────────│
   │                               │
-  │──── tools/call ──────────────►│   Execute a tool
+  │──── tools/call ──────────────►│   Ejecutar una herramienta
   │◄─── tool result ──────────────│
   │                               │
 ```
 
 ---
 
-## Project Structure
+## Estructura del proyecto
 
 ```
 .
 ├── servers/
-│   ├── basic/           TypeScript — quotes, math tools, code review prompt
-│   ├── todo-ts/         TypeScript — full TODO CRUD via MCP tools
-│   └── calculator-py/   Python     — arithmetic calculator (FastMCP)
+│   ├── basic/           TypeScript — citas aleatorias, herramienta matemática, prompt de revisión de código
+│   ├── todo-ts/         TypeScript — gestor TODO completo con CRUD vía MCP
+│   └── calculator-py/   Python     — calculadora aritmética (FastMCP)
 │
 └── clients/
-    ├── basic-ts/        TypeScript — discovers and exercises the basic server
-    ├── basic-py/        Python     — same, async version
-    ├── ollama-ts/       TypeScript — Ollama LLM + MCP tool calling (interactive chat)
-    └── ollama-py/       Python     — same, async version
+    ├── basic-ts/        TypeScript — explora todas las capacidades del servidor basic
+    ├── basic-py/        Python     — igual que basic-ts, versión asíncrona
+    ├── ollama-ts/       TypeScript — chat interactivo con Ollama LLM + tool calling MCP
+    └── ollama-py/       Python     — igual que ollama-ts, versión asíncrona
 ```
 
 ---
 
-## Quick Start
+## Inicio rápido
 
-### Prerequisites
+### Requisitos previos
 
-| Tool | Version |
+| Herramienta | Versión |
 |---|---|
 | Node.js | v18+ |
 | Python | 3.11+ |
-| [uv](https://docs.astral.sh/uv/) | latest |
-| Ollama *(only for ollama clients)* | latest |
+| [uv](https://docs.astral.sh/uv/) | última |
+| Ollama *(solo para los clientes ollama)* | última |
 
 ---
 
-### 1. Build and run the basic server
+### 1. Compilar y arrancar el servidor básico
 
 ```bash
 cd servers/basic
@@ -92,7 +92,7 @@ npm run build
 npm start
 ```
 
-### 2. Run the TypeScript client
+### 2. Ejecutar el cliente TypeScript
 
 ```bash
 cd clients/basic-ts
@@ -101,10 +101,10 @@ npm run build
 npm start
 ```
 
-> The client auto-discovers the server at `servers/basic/dist/server.js` relative to the repo root.
-> Override with: `MCP_SERVER_PATH=/absolute/path/to/server.js npm start`
+> El cliente resuelve automáticamente la ruta del servidor relativa a la raíz del repositorio (`servers/basic/dist/server.js`).
+> Para sobreescribirla: `MCP_SERVER_PATH=/ruta/absoluta/al/server.js npm start`
 
-### 3. Run the Python client
+### 3. Ejecutar el cliente Python
 
 ```bash
 cd clients/basic-py
@@ -112,9 +112,9 @@ uv sync
 uv run main.py
 ```
 
-### 4. Interactive chat with Ollama
+### 4. Chat interactivo con Ollama
 
-Make sure [Ollama](https://ollama.com) is running and you have a model pulled (e.g. `ollama pull mistral`).
+Asegúrate de que [Ollama](https://ollama.com) está en marcha y tienes un modelo descargado (p. ej. `ollama pull mistral`).
 
 ```bash
 cd clients/ollama-ts
@@ -123,39 +123,39 @@ npm run build
 npm start
 ```
 
-Type messages in the terminal. The LLM will call MCP tools automatically when needed.
-Type `/exit` to quit.
+Escribe mensajes en la terminal. El LLM llamará a las herramientas MCP de forma automática cuando lo necesite.
+Escribe `/exit` para salir.
 
 ---
 
-## Servers
+## Servidores
 
-| Server | Language | Description |
+| Servidor | Lenguaje | Descripción |
 |---|---|---|
-| [`basic`](servers/basic/) | TypeScript | Quotes API, LCM math tool, person resource, code review prompt |
-| [`todo-ts`](servers/todo-ts/) | TypeScript | In-memory TODO list with full CRUD |
-| [`calculator-py`](servers/calculator-py/) | Python | add, subtract, multiply, divide |
+| [`basic`](servers/basic/) | TypeScript | API de citas, herramienta LCM, resource de persona, prompt de revisión de código |
+| [`todo-ts`](servers/todo-ts/) | TypeScript | Lista TODO en memoria con CRUD completo |
+| [`calculator-py`](servers/calculator-py/) | Python | suma, resta, multiplicación, división |
 
-## Clients
+## Clientes
 
-| Client | Language | Description |
+| Cliente | Lenguaje | Descripción |
 |---|---|---|
-| [`basic-ts`](clients/basic-ts/) | TypeScript | Exercises all capabilities of the basic server |
-| [`basic-py`](clients/basic-py/) | Python | Same as basic-ts, async |
-| [`ollama-ts`](clients/ollama-ts/) | TypeScript | Interactive chat — Ollama LLM with MCP tool calling |
-| [`ollama-py`](clients/ollama-py/) | Python | Same as ollama-ts, async |
+| [`basic-ts`](clients/basic-ts/) | TypeScript | Ejercita todas las capacidades del servidor basic |
+| [`basic-py`](clients/basic-py/) | Python | Igual que basic-ts, versión asíncrona |
+| [`ollama-ts`](clients/ollama-ts/) | TypeScript | Chat interactivo — Ollama LLM con tool calling MCP |
+| [`ollama-py`](clients/ollama-py/) | Python | Igual que ollama-ts, versión asíncrona |
 
 ---
 
-## Environment Variables
+## Variables de entorno
 
-| Variable | Default | Description |
+| Variable | Valor por defecto | Descripción |
 |---|---|---|
-| `MCP_SERVER_PATH` | *(relative to client)* | Absolute path to the MCP server JS file |
-| `OLLAMA_URL` | `http://localhost:11434` | Ollama API base URL *(ollama clients only)* |
+| `MCP_SERVER_PATH` | *(relativa al cliente)* | Ruta absoluta al fichero JS del servidor MCP |
+| `OLLAMA_URL` | `http://localhost:11434` | URL base de la API de Ollama *(solo clientes ollama)* |
 
 ---
 
-## License
+## Licencia
 
 [Apache 2.0](LICENSE)

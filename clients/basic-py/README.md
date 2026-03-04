@@ -1,41 +1,41 @@
-# Basic MCP Client (Python)
+# Cliente MCP básico (Python)
 
-A minimal async Python MCP client that connects to the [basic server](../../servers/basic/) and exercises all three capability types: tools, resources, and prompts.
+Cliente MCP mínimo asíncrono en Python que se conecta al [servidor basic](../../servers/basic/) y ejercita los tres tipos de capacidades: tools, resources y prompts.
 
-## What it does
+## Qué hace
 
-1. Connects to the basic MCP server via stdio
-2. Lists all available **prompts**, **resources**, **resource templates**, and **tools**
-3. Calls each one with sample arguments and prints the results
+1. Se conecta al servidor MCP básico a través de stdio
+2. Lista todos los **prompts**, **resources**, **resource templates** y **tools** disponibles
+3. Llama a cada uno con argumentos de ejemplo e imprime los resultados
 
 ---
 
-## Setup
+## Instalación
 
-**Prerequisites:** Python 3.11+, [uv](https://docs.astral.sh/uv/)
+**Requisitos:** Python 3.11+, [uv](https://docs.astral.sh/uv/)
 
 ```bash
 uv sync
 ```
 
-## Run
+## Ejecución
 
 ```bash
 uv run main.py
 ```
 
-By default the client resolves the server path relative to the repo root (`servers/basic/dist/server.js`). Override with:
+Por defecto el cliente resuelve la ruta del servidor relativa a la raíz del repositorio (`servers/basic/dist/server.js`). Para sobreescribirla:
 
 ```bash
-MCP_SERVER_PATH=/absolute/path/to/server.js uv run main.py
+MCP_SERVER_PATH=/ruta/absoluta/al/server.js uv run main.py
 ```
 
-> The basic server must be built before running this client (`cd servers/basic && npm run build`).
+> El servidor basic debe estar compilado antes de ejecutar este cliente (`cd servers/basic && npm run build`).
 
-## Project Structure
+## Estructura del proyecto
 
 ```
 clients/basic-py/
-├── main.py          Client entry point
-└── pyproject.toml   Python project and dependency config
+├── main.py          Punto de entrada del cliente
+└── pyproject.toml   Configuración del proyecto Python y dependencias
 ```

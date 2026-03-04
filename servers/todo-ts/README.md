@@ -1,51 +1,51 @@
-# TODO MCP Server
+# Servidor MCP TODO
 
-An MCP server written in TypeScript that exposes a full TODO list manager through MCP **tools**. Uses in-memory storage — state resets when the server restarts.
+Servidor MCP escrito en TypeScript que expone un gestor completo de tareas pendientes a través de **tools** MCP. Usa almacenamiento en memoria — el estado se reinicia al reiniciar el servidor.
 
 ## Tools
 
-| Name | Arguments | Description |
+| Nombre | Argumentos | Descripción |
 |---|---|---|
-| `TODO-Create` | `task: string` | Add a new TODO item |
-| `TODO-List` | — | List all TODO items (pending and completed) |
-| `TODO-Complete` | `id: string` | Mark an item as completed |
-| `TODO-Update` | `id: string`, `task: string` | Update the text of an existing item |
-| `TODO-Delete` | `id: string` | Delete an item permanently |
-| `TODO-ClearCompleted` | — | Remove all completed items at once |
+| `TODO-Create` | `task: string` | Añade un nuevo elemento a la lista |
+| `TODO-List` | — | Lista todos los elementos (pendientes y completados) |
+| `TODO-Complete` | `id: string` | Marca un elemento como completado |
+| `TODO-Update` | `id: string`, `task: string` | Actualiza el texto de un elemento existente |
+| `TODO-Delete` | `id: string` | Elimina un elemento de forma permanente |
+| `TODO-ClearCompleted` | — | Elimina todos los elementos completados de una vez |
 
 ---
 
-## Setup
+## Instalación
 
-**Prerequisites:** Node.js v18+
+**Requisitos:** Node.js v18+
 
 ```bash
 npm install
 npm run build
 ```
 
-## Run
+## Ejecución
 
 ```bash
 npm start
 ```
 
-The server communicates over **stdio** and is meant to be launched by an MCP client.
+El servidor se comunica por **stdio** y está diseñado para ser lanzado por un cliente MCP.
 
-## Project Structure
+## Estructura del proyecto
 
 ```
 servers/todo-ts/
 ├── src/
-│   ├── index.ts             Server entry point — tool definitions
+│   ├── index.ts             Punto de entrada del servidor — definición de tools
 │   └── todo/
-│       └── todo.service.ts  In-memory store and CRUD helpers
-├── dist/                    Compiled JavaScript output (after build)
+│       └── todo.service.ts  Almacén en memoria y helpers CRUD
+├── dist/                    Salida JavaScript compilada (tras el build)
 ├── package.json
 └── tsconfig.json
 ```
 
-## Connecting a Client
+## Conectar un cliente
 
 ```typescript
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";

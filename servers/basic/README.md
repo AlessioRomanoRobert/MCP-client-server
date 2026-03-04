@@ -1,63 +1,63 @@
-# Basic MCP Server
+# Servidor MCP básico
 
-A feature-rich MCP server written in TypeScript that demonstrates the three core MCP capability types: **tools**, **resources**, and **prompts**.
+Servidor MCP escrito en TypeScript que demuestra los tres tipos de capacidades principales de MCP: **tools**, **resources** y **prompts**.
 
-## Capabilities
+## Capacidades
 
 ### Tools
 
-| Name | Description |
+| Nombre | Descripción |
 |---|---|
-| `get_random_quotes` | Fetches 1–10 random quotes from a public quotes API |
-| `lcm` | Calculates the least common multiple of a list of numbers |
+| `get_random_quotes` | Obtiene entre 1 y 10 citas aleatorias desde una API pública |
+| `lcm` | Calcula el mínimo común múltiplo de una lista de números |
 
 ### Resources
 
-| URI | Description |
+| URI | Descripción |
 |---|---|
-| `got://quotes/random` | Static resource — returns 5 random quotes |
-| `person://properties/{name}` | Template resource — returns properties for a named person (`alexys`, `mariana`) |
+| `got://quotes/random` | Resource estático — devuelve 5 citas aleatorias |
+| `person://properties/{name}` | Resource con plantilla — devuelve las propiedades de una persona por nombre (`alexys`, `mariana`) |
 
 ### Prompts
 
-| Name | Arguments | Description |
+| Nombre | Argumentos | Descripción |
 |---|---|---|
-| `got_quotes_analysis` | `theme?` (optional) | Primes the AI to analyze quotes, optionally focused on a theme |
-| `code_review` | `code` | Primes the AI to perform a thorough code review |
+| `got_quotes_analysis` | `theme?` (opcional) | Prepara a la IA para analizar citas, con temática opcional |
+| `code_review` | `code` | Prepara a la IA para realizar una revisión de código exhaustiva |
 
 ---
 
-## Setup
+## Instalación
 
-**Prerequisites:** Node.js v18+
+**Requisitos:** Node.js v18+
 
 ```bash
 npm install
 npm run build
 ```
 
-## Run
+## Ejecución
 
 ```bash
 npm start
 ```
 
-The server listens on **stdio** — it is designed to be launched by an MCP client, not run directly as a standalone HTTP server.
+El servidor escucha por **stdio** — está diseñado para ser lanzado por un cliente MCP, no para ejecutarse directamente como servidor HTTP independiente.
 
-## Project Structure
+## Estructura del proyecto
 
 ```
 servers/basic/
 ├── src/
-│   └── server.ts     Main server — tools, resources, and prompts
-├── dist/             Compiled JavaScript output (after build)
+│   └── server.ts     Servidor principal — tools, resources y prompts
+├── dist/             Salida JavaScript compilada (tras el build)
 ├── package.json
 └── tsconfig.json
 ```
 
-## Connecting a Client
+## Conectar un cliente
 
-From a client, launch this server via stdio transport:
+Desde un cliente, lanza este servidor a través del transporte stdio:
 
 ```typescript
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
@@ -68,4 +68,4 @@ const transport = new StdioClientTransport({
 });
 ```
 
-See [`clients/basic-ts`](../../clients/basic-ts/) or [`clients/basic-py`](../../clients/basic-py/) for working examples.
+Consulta [`clients/basic-ts`](../../clients/basic-ts/) o [`clients/basic-py`](../../clients/basic-py/) para ver ejemplos funcionales.

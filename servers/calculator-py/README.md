@@ -1,44 +1,44 @@
-# Calculator MCP Server
+# Servidor MCP Calculadora
 
-A minimal MCP server written in Python using [FastMCP](https://github.com/jlowin/fastmcp). Exposes a single `calculate` tool that performs basic arithmetic operations.
+Servidor MCP mínimo escrito en Python usando [FastMCP](https://github.com/jlowin/fastmcp). Expone una tool `calculate` que realiza operaciones aritméticas básicas.
 
 ## Tools
 
-| Name | Arguments | Description |
+| Nombre | Argumentos | Descripción |
 |---|---|---|
-| `calculate` | `a: float`, `b: float`, `operation: str` | Performs `add`, `subtract`, `multiply`, or `divide` on two numbers |
+| `calculate` | `a: float`, `b: float`, `operation: str` | Realiza `add`, `subtract`, `multiply` o `divide` sobre dos números |
 
-**Valid operations:** `add` · `subtract` · `multiply` · `divide`
+**Operaciones válidas:** `add` · `subtract` · `multiply` · `divide`
 
-Division by zero raises a `ValueError`.
+La división por cero lanza un `ValueError`.
 
 ---
 
-## Setup
+## Instalación
 
-**Prerequisites:** Python 3.11+, [uv](https://docs.astral.sh/uv/)
+**Requisitos:** Python 3.11+, [uv](https://docs.astral.sh/uv/)
 
 ```bash
 uv sync
 ```
 
-## Run
+## Ejecución
 
 ```bash
 uv run server.py
 ```
 
-The server communicates over **stdio** and is meant to be launched by an MCP client.
+El servidor se comunica por **stdio** y está diseñado para ser lanzado por un cliente MCP.
 
-## Project Structure
+## Estructura del proyecto
 
 ```
 servers/calculator-py/
-├── server.py        FastMCP server — tool definition
-└── pyproject.toml   Python project and dependency config
+├── server.py        Servidor FastMCP — definición de la tool
+└── pyproject.toml   Configuración del proyecto Python y dependencias
 ```
 
-## Connecting a Client
+## Conectar un cliente
 
 ```python
 from mcp import ClientSession, StdioServerParameters
