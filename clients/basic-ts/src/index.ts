@@ -1,9 +1,18 @@
 import { Client } from "@modelcontextprotocol/sdk/client/index.js";
 import { StdioClientTransport } from "@modelcontextprotocol/sdk/client/stdio.js";
+import { fileURLToPath } from "url";
+import path from "path";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Path to the basic server — override with MCP_SERVER_PATH env var
+const serverPath = process.env.MCP_SERVER_PATH ||
+  path.resolve(__dirname, "../../../servers/basic/dist/server.js");
 
 const transport = new StdioClientTransport({
   command: "node",
-  args: ["/Users/alexyslozada/github.com/alexyslozada/mcp-course/servers/basic/dist/server.js"]
+  args: [serverPath]
 });
 
 // Create a client
@@ -41,7 +50,7 @@ console.log(JSON.stringify(tools, null, 2));
 
 // Get a prompt
 console.log("========================================")
-console.log("Getting prompt code review")
+console.log("Getting prompt: code_review")
 const prompt = await client.getPrompt({
   name: prompts.prompts[1].name,
   arguments: {
@@ -50,7 +59,7 @@ const prompt = await client.getPrompt({
 });
 console.log(JSON.stringify(prompt, null, 2));
 
-// Get a resource
+// Read a resource
 const resource = await client.readResource({
   uri: "got://quotes/random"
 });
@@ -58,7 +67,7 @@ console.log("========================================")
 console.log("Resource fetched");
 console.log(JSON.stringify(resource, null, 2));
 
-// Get a template resource
+// Read a template resource
 const templateResource = await client.readResource({
   uri: "person://properties/alexys"
 });
@@ -66,7 +75,7 @@ console.log("========================================")
 console.log("Template resource fetched");
 console.log(JSON.stringify(templateResource, null, 2));
 
-// Get a tool
+// Call a tool
 const tool = await client.callTool({
   name: tools.tools[1].name,
   arguments: {
@@ -74,6 +83,5 @@ const tool = await client.callTool({
   }
 });
 console.log("========================================")
-console.log("Tool fetched");
+console.log("Tool result");
 console.log(JSON.stringify(tool, null, 2));
-

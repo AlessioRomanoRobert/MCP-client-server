@@ -22,10 +22,16 @@ enum MessageRole {
 }
 
 // Configuración
+import { fileURLToPath } from "url";
+import path from "path";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const DEFAULT_OLLAMA_URL = "http://localhost:11434";
 const DEFAULT_MCP_SERVER_COMMAND = "node";
 const DEFAULT_MCP_SERVER_PATH = process.env.MCP_SERVER_PATH ||
-  "/Users/alexyslozada/github.com/alexyslozada/mcp-course/servers/basic/dist/server.js";
+  path.resolve(__dirname, "../../../servers/basic/dist/server.js");
 const DEFAULT_MODEL = "mistral:latest";
 
 // Tipos para TypeScript

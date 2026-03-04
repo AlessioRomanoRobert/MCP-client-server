@@ -1,12 +1,19 @@
+import asyncio
+import os
+import pathlib
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 
-# Crear los parámetros para la conexión stdio
+# Path to the basic server — override with MCP_SERVER_PATH env var
+_HERE = pathlib.Path(__file__).parent
+server_path = os.environ.get(
+    "MCP_SERVER_PATH",
+    str(_HERE / "../../../servers/basic/dist/server.js"),
+)
+
 server_params = StdioServerParameters(
     command="node",
-    args=[
-        "/Users/alexyslozada/github.com/alexyslozada/mcp-course/servers/basic/dist/server.js"
-    ],
+    args=[server_path],
     env=None,
 )
 
@@ -15,12 +22,12 @@ async def run():
         async with ClientSession(read, write) as session:
             await session.initialize()
 
-            """  lista los prompts disponibles """
+            # List available prompts
             prompts = await session.list_prompts()
             print("Prompts:")
             print(prompts)
 
-            """ ejecuta un prompt """
+            # Execute a prompt
             prompt = await session.get_prompt(
                 prompts.prompts[1].name,
                 arguments={
@@ -30,32 +37,32 @@ async def run():
             print("Prompt:")
             print(prompt)
 
-            """ listar los recursos disponibles """
+            # List available resources
             resources = await session.list_resources()
             print("Resources:")
             print(resources)
-            
-            """ listar los recursos dinámicos disponibles """
+
+            # List dynamic resource templates
             template_resources = await session.list_resource_templates()
             print("Template Resources:")
             print(template_resources)
 
-            """ obtener un recurso """
+            # Read a resource
             resource = await session.read_resource("got://quotes/random")
             print("Resource:")
             print(resource)
 
-            """ obtener un recurso dinámico """
+            # Read a template resource
             resource = await session.read_resource("person://properties/alexys")
             print("Resource:")
             print(resource)
 
-            """ listar las herramientas disponibles """
+            # List available tools
             tools = await session.list_tools()
             print("Tools:")
             print(tools)
 
-            """ ejecutar una herramienta """
+            # Call a tool
             tool_result = await session.call_tool(
                 tools.tools[1].name,
                 arguments={
@@ -64,7 +71,6 @@ async def run():
             )
             print("Tool Result:")
             print(tool_result)
-    
+
 if __name__ == "__main__":
-    import asyncio
     asyncio.run(run())

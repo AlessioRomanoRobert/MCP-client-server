@@ -2,6 +2,7 @@ import requests
 import json
 import sys
 import os
+import pathlib
 import logging
 from enum import Enum
 from typing import List, Dict, Any, Optional, Union
@@ -27,9 +28,10 @@ class MessageRole(str, Enum):
 # Configuración
 DEFAULT_OLLAMA_URL = "http://localhost:11434"
 DEFAULT_MCP_SERVER_COMMAND = "node"
+_HERE = pathlib.Path(__file__).parent
 DEFAULT_MCP_SERVER_PATH = os.environ.get(
-    "MCP_SERVER_PATH", 
-    "/Users/alexyslozada/github.com/alexyslozada/mcp-course/servers/basic/dist/server.js"
+    "MCP_SERVER_PATH",
+    str(_HERE / "../../../servers/basic/dist/server.js"),
 )
 DEFAULT_MODEL = "mistral:latest"
 
